@@ -94,6 +94,10 @@ Route::get('notes/urls', function () {
     return view('notes.urls');
 });
 
+Route::get('notes/sessions', function () {
+    return view('notes.sessions');
+});
+
 
 
 

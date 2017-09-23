@@ -118,7 +118,9 @@
     })
   </code></pre>
 
-  <p class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">Note: if you return a PSR-7 response instance from a route or controller, it will automatically be converted back to a Laravel response instance and be displayed by the framework.</p>
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>If you return a PSR-7 response instance from a route or controller, it will automatically be converted back to a Laravel response instance and be displayed by the framework.</p>
+  </div>
 
   <h2>Input Trimming and Normalization</h2>
 
@@ -210,7 +212,9 @@
     $input = $request->except('credit_card');
   </code></pre>
 
-  <p class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">Note: the only() method returns all of the key/value pairs that your request, however, it will not return key/value pairs that are not present on the request.</p>
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>The only() method returns all of the key/value pairs that your request, however, it will not return key/value pairs that are not present on the request.</p>
+  </div>
 
   <h4>Determining if an Input Value is Present</h4>
 

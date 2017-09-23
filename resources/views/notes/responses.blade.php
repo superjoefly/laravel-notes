@@ -23,7 +23,9 @@
     });
   </code></pre>
 
-  <p class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">Note: we can also return Eloquent Collections from the routes and controllers. They will automatically be converted to JSON.</p>
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>We can also return Eloquent Collections from the routes and controllers. They will automatically be converted to JSON.</p>
+  </div>
 
   <h4>Response Objects</h4>
 
@@ -236,7 +238,9 @@
     return response()->download($pathToFile)->deleteFileAfterSend(true);
   </code></pre>
 
-  <p class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">Note: Symphony HttpFoundation, which manages file downloads, requires the file being downloaded to have an ASCII file name.</p>
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>Symphony HttpFoundation, which manages file downloads, requires the file being downloaded to have an ASCII file name.</p>
+  </div>
 
   <h3>File Responses</h3>
 

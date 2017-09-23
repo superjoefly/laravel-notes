@@ -122,7 +122,9 @@
     }
   </code></pre>
 
-  <p class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">Note: if we create a new service provider to contain the view composer registrations, we must add the service provider to the providers array in the config/app.php configuration file.</p>
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>If we create a new service provider to contain the view composer registrations, we must add the service provider to the providers array in the config/app.php configuration file.</p>
+  </div>
 
   <p>Once the composer is registered, the ProfileComposer@compose method will be executed each time the profile view is being rendered. Here is the example composer class:</p>
 
@@ -150,7 +152,9 @@
 
   <p>Right before the view is rendered, the composer's compose method is called with the Illuminate\View\View instance. We can use the with() method to bind data to the view.</p>
 
-  <p class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">Note: All view composers are resolved via the service container, so we can type-hint any dependencies needed within a composer's constructor.</p>
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>All view composers are resolved via the service container, so we can type-hint any dependencies needed within a composer's constructor.</p>
+  </div>
 
   <h4>Attaching a Composer to Multiple Views</h4>
 

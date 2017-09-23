@@ -35,7 +35,9 @@
 
   <p>When a request matches the specified route URI, the show method on the UsersController class will be executed. Alos, the route paramters will also be passed to the method.</p>
 
-  <p class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">Note: controllers are not required to extend a base class, however, you will not have access to convenience features such as the middleware, validate and dispatch methods.</p>
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>Controllers are not required to extend a base class, however, you will not have access to convenience features such as the middleware, validate and dispatch methods.</p>
+  </div>
 
   <h3>Controllers and Namespaces</h3>
 
@@ -261,7 +263,9 @@
     Route::resource('photos', 'PhotoController');
   </code></pre>
 
-  <p class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">Note: remember to keep your controllers focused. If you find yourself routinely needing methods outside of the typical resource actions, consider splitting your controller into two, smaller controllers.</p>
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>Remember to keep your controllers focused. If you find yourself routinely needing methods outside of the typical resource actions, consider splitting your controller into two, smaller controllers.</p>
+  </div>
 
   <h2>Dependency Injection and Controllers</h2>
 
@@ -329,7 +333,9 @@
 
   <h2>Route Caching</h2>
 
-  <p class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">Note: Closure based routes cannot be cached. To use route-caching, you must convert any closure routes to controller classes.</p>
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>Closure based routes cannot be cached. To use route-caching, you must convert any closure routes to controller classes.</p>
+  </div>
 
   <p>If you application is exclusively using controller based routes, you should take advantage of Laravel's route cache. Using the route cache will drastically decrease the amount of time it takes to register all of your application's routes. In some cases, your route registration may even be up to 100x faster. To generate a route cache, just execute the route:cache Artisan command:</p>
 

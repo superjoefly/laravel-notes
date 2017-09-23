@@ -202,7 +202,9 @@
           })
         </code></pre>
       </p>
-      <p class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">Note: by default, the RouteServiceProvider includes your route files within a namespace group, allowing you to register controller routes without specifying the full App\Http\Controllers namespace prefix. So, you only need to specify the portion of the namespace that comes after the base  App\Http\Controllers namespace.</p>
+      <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+        <p>By default, the RouteServiceProvider includes your route files within a namespace group, allowing you to register controller routes without specifying the full App\Http\Controllers namespace prefix. So, you only need to specify the portion of the namespace that comes after the base  App\Http\Controllers namespace.</p>
+      </div>
 
       <h3>Sub-Domain Routing</h3>
       <p>Route groups may also be used to handle sub-domain routing. The sub-domain may be specified by calling the domain method before defining the group:
