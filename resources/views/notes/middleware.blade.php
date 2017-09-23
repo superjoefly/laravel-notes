@@ -146,7 +146,7 @@
 
       <p>We can group several middleware under a single key to make them easier to assign to routes using the $middlewareGroups property of the HTTP kernel (see middlewareGroups in App\Http\Kernel.php)</p>
 
-      <p>Middleware groups can be assigned to routes and controller actions usint the same syntax as individual middleware. Middleware groups simply make it more covenient to assign many middleware to a route at onece:</p>
+      <p>Middleware groups can be assigned to routes and controller actions using the same syntax as individual middleware. Middleware groups simply make it more covenient to assign many middleware to a route at onece:</p>
 
       <pre><code class="language-php">
         Route::get('/', function() {
