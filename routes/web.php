@@ -33,7 +33,7 @@
 //     echo 'True';
 // };
 
-// Named route
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -96,6 +96,10 @@ Route::get('notes/urls', function () {
 
 Route::get('notes/sessions', function () {
     return view('notes.sessions');
+});
+
+Route::get('notes/validation', function () {
+    return view('notes.validation');
 });
 
 
@@ -165,9 +169,15 @@ Route::get('user/{id}', 'UsersController@show');
 Route::resource('photo', 'PhotoController');
 
 
-// Requests
+// Requests (register)
 Route::get('/register', 'RegistrationController@create');
 Route::post('/register', 'RegistrationController@store');
+
+// Validation (post)
+Route::get('post/create', 'PostController@create');
+Route::post('/post', 'PostController@store');
+
+Route::get('/posts', 'PostController@index');
 
 
 // Adminer

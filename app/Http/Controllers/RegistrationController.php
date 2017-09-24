@@ -56,9 +56,9 @@ class RegistrationController extends Controller
         // // Old Input
         // $username = $request->old('username');
 
-        // Cookies
-        $value= $request->cookie('name');
-        dd($value);
+        // // Cookies
+        // $value= $request->cookie('name');
+        // dd($value);
 
         return redirect()->home();
     }
