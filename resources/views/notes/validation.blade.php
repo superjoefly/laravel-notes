@@ -322,7 +322,105 @@
     }
   </code></pre>
 
+  <h2>Working with Error Messages</h2>
 
+  <p>After calling the errors() method on a Validator instance, we will receive an Illuminate\Support\MessageBag instance, which has a variety of convenient methods for working with error messages. The $errors variable that is automatically made available to all views is also an instance of the MessageBag class.</p>
 
+  <h4>Retrieving the First Error Message for a Field</h4>
+
+  <p>To retrieve the first error message for a given field, we can use the first() method:</p>
+
+  <pre><code class="language-php">
+    $errors = $validator->errors();
+
+    echo $errors->first('email');
+  </code></pre>
+
+  <h4>Retrieving All Error Messages for a Field</h4>
+
+  <p>To retrieve an array of all the messages for a given field, we can use the get() method:</p>
+
+  <pre><code class="language-php">
+    foreach ($errors->get('email') as $message) {
+      // do something...
+    }
+  </code></pre>
+
+  <p>If validating an array form field, we can retrieve all of the messages for each of the array elements using the * character:</p>
+
+  <pre><code class="language-php">
+    foreach ($errors->all() as $message) {
+      // do something...
+    }
+  </code></pre>
+
+  <h4>Determining if a Message Exists for a Field</h4>
+
+  <p>The has() method can be used to determine if any error messages exist for a given field:</p>
+
+  <pre><code class="language-php">
+    if ($errors->has('email')) {
+      // do something...
+    }
+  </code></pre>
+
+  <h3>Custom Error Messages</h3>
+
+  <p>We can also use custom error messages for validation instead of the defaults. There are several ways to specify custom messages. First, we can pass the custom messages as the third argument to the Validator:make method:</p>
+
+  <pre><code class="language-php">
+    $messages = [
+      'required' => 'The :attribute field is required.',
+    ];
+
+    $validator = Validator::make($input, $rules, $messages);
+  </code></pre>
+
+  <p>In this example, the :attribute place-holder will be replaced by the actual name of the field under validation. We can also utilize other place-holders in validation messages. For example:</p>
+
+  <pre><code class="language-php">
+    $messages = [
+        'same'    => 'The :attribute and :other must match.',
+        'size'    => 'The :attribute must be exactly :size.',
+        'between' => 'The :attribute value :input is not between :min - :max.',
+        'in'      => 'The :attribute must be one of the following types: :values',
+    ];
+  </code></pre>
+
+  <h4>Specifying a Custom Message for a Given Attribute</h4>
+
+  <p>We can specify a custom error message only for a specific field using "dot" notation. First specify the attribute's name, followed by the rule:</p>
+
+  <pre><code class="language-php">
+    $messages = [
+    'email.required' => 'We need to know your email address...',
+    ];
+  </code></pre>
+
+  <h4>Specify Custom Messages in Language Files</h4>
+
+  <p>Often, we will specify custom messages in a language file instead of passing them directly to the Validator. To do this, we can add our messages to custom array in the resources/lang/xx/validation.php language file:</p>
+
+  <pre><code class="language-php">
+    'custom' => [
+        'email' => [
+            'required' => 'We need to know your e-mail address!',
+        ],
+    ],
+  </code></pre>
+
+  <h4>Specifying Custom Attributes in the Language Files</h4>
+
+  <p>If we want the :attribute portion of the validation message to be replaced with a custom attribute name, we can specify the custom name in the attributes array of the resources/lang/xx/validation.php language file:</p>
+
+  <pre><code class="language-php">
+    'attributes' => [
+    'email' => 'email address',
+    ],
+  </code></pre>
+
+  <h2>Available Validation Rules</h2>
+
+  <p></p>
 
 @endsection
