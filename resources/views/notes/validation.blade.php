@@ -176,13 +176,6 @@
   <p>To add an "after" hook to a form request, we can use the withValidator() method. This method receives the fully constructed validator, allowing us to call any of its methods before the validation rules are actually evaluated:</p>
 
   <pre><code class="language-php">
-    /**
-     * Configure the validator instance.
-     *
-     * @param  \Illuminate\Validation\Validator  $validator
-     * @return void
-     */
-
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
@@ -250,12 +243,6 @@
 
     class PostController extends Controller
     {
-        /**
-         * Store a new blog post.
-         *
-         * @param  Request  $request
-         * @return Response
-         */
         public function store(Request $request)
         {
             $validator = Validator::make($request->all(), [
@@ -501,6 +488,133 @@
 
   <h3>Using Rule Objects</h3>
 
-  <p></p>
+  <p>Laravel provides a variety of helpful validation rules, however, we may want to specify some of our own. One method of registering custom validation rules is using rule objects. To generate a new rule object, we can use the make:rule Artisan command. Here, we will generate a rule that verifies a string is uppercase. Laravel will automatically place the new rule in the app/Rules directory:</p>
+
+  <pre><code class="language-php">
+    php artisan make:rule Uppercase
+  </code></pre>
+
+  <p>Once the rule has been created, we are ready to define its behavior. A rule object contains two methods: passes and message. The passes() method receives the attribute value and name, and should return either true or false depending on whether the attribute value is valid or not. The message() method should return the validation error message that should be used when the validation fails:</p>
+
+  <pre><code class="language-php">
+    namespace App\Rules;
+
+    use Illuminate\Contracts\Validation\Rule;
+
+    class Uppercase implements Rule
+    {
+        public function passes($attribute, $value)
+        {
+            return strtoupper($value) === $value;
+        }
+
+        public function message()
+        {
+            return 'The :attribute must be uppercase.';
+        }
+    }
+  </code></pre>
+
+  <p>Of course, we can call the trans() helper from the message() method if we want to return an error message from the translation files:</p>
+
+  <pre><code class="language-php">
+    public function message()
+    {
+        return trans('validation.uppercase');
+    }
+  </code></pre>
+
+  <p>Once the rule has been defined, we can attach it to a validator by passing an instance of the rule object with the other validation rules:</p>
+
+  <pre><code class="language-php">
+    use App\Rules\Uppercase;
+
+    $request->validate([
+        'name' => ['required', new Uppercase],
+    ]);
+  </code></pre>
+
+  <h3>Using Extensions</h3>
+
+  <p>Another method of registering custom validation rules is using the extend() method on the Validator facade. In the following example, we use this method within a service provider to register a custom validation rule:</p>
+
+  <pre><code class="language-php">
+    namespace App\Providers;
+
+    use Illuminate\Support\ServiceProvider;
+    use Illuminate\Support\Facades\Validator;
+
+    class AppServiceProvider extends ServiceProvider
+    {
+        public function boot()
+        {
+            Validator::extend('foo', function ($attribute, $value, $parameters, $validator) {
+                return $value == 'foo';
+            });
+        }
+
+        public function register()
+        {
+            //
+        }
+    }
+  </code></pre>
+
+  <p>The custom validator closure receives four arguments: the name of the $attribute being validated, the $value of the attribute, an array of $parameters passed to the rule, and the Validator instance.</p>
+
+  <p>We can also pass a class and extend() method instead of a closure:</p>
+
+  <pre><code class="language-php">
+    Validator::extend('foo', 'FooValidator@validate');
+  </code></pre>
+
+  <h4>Defining the Error Message</h4>
+
+  <p>We will also need to define an error message for the custom rule. We can do so either using an inline custom message array, or by adding an entry in the validation language file. This message should be placed in the first level of the array, not within the custom array, which is only for attribute-specific error messages:</p>
+
+  <pre><code class="language-php">
+    "foo" => "Your input was invalid!",
+
+    "accepted" => "The :attribute must be accepted.",
+
+    // The rest of the validation error messages...
+  </code></pre>
+
+  <p>When creating a custom validation rule, we may sometimes want to define custom place-holder replacements for error messages. We can do this by creating a custom Validator as described above, then making a call to the replacer() method on the Validator facade. We can do this with the boot() method of a service provider:</p>
+
+  <pre><code class="language-php">
+    public function boot()
+    {
+        Validator::extend(...);
+
+        Validator::replacer('foo', function ($message, $attribute, $rule, $parameters) {
+            return str_replace(...);
+        });
+    }
+  </code></pre>
+
+  <h4>Implicit Extensions</h4>
+
+  <p>By default, when an attribute being validated is not present or contains an empty value as defined by the required rule, normal validation rules, including custom extensions, are not run. For example, the unique rule will not be run against a null value:</p>
+
+  <pre><code class="language-php">
+    $rules = ['name' => 'unique'];
+
+    $input = ['name' => null];
+
+    Validator::make($input, $rules)->passes(); // true
+  </code></pre>
+
+  <p>For a rule to run even when an attribute is empty, the rule must imply that the attribute is required. To create such an "implicit" extension, we can use the Validator::extendImplicit() method:</p>
+
+  <pre><code class="language-php">
+    Validator::extendImplicit('foo', function($attribute, $value, $parameters, $validator) {
+      return $value == 'foo';
+    });
+  </code></pre>
+
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>An "implicit" extension only implies that the attribute is required. Whether it actually invalidates a missing or empty attribute is up to us.</p>
+  </div>
 
 @endsection
