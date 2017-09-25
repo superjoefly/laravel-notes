@@ -28,4 +28,13 @@ class StoreBlogPost extends FormRequest
           'body' => 'required',
         ];
     }
+
+    // Define Custom Error Messages
+    public function messages()
+    {
+        return [
+            'title.required' => 'A title is required',
+            'body.required'  => 'A message is required',
+        ];
+    }
 }

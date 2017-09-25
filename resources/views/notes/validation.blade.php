@@ -195,6 +195,35 @@
 
   <h2>Authorizing Form Requests</h2>
 
-  <p></p>
+  <p>The form request class also contains an authorize() method. Within this method, we can check if the authenticated user actually has the authority to update a given resource. For example, we can determine if a user actualy owns a blog comment they are attempting to update:</p>
+
+  <pre><code class="language-php">
+    public function authorize()
+    {
+        $comment = Comment::find($this->route('comment'));
+
+        return $comment && $this->user()->can('update', $comment);
+    }
+  </code></pre>
+
+  <p>Since all form requests extend the base Laravel request class, we can use the user() method to access the currently authenticated user. Also, note the call to the route() method in the above example. This method grants access to the URI parameters defined on the route being called, such as the {comment} parameter in the example below:</p>
+
+  <pre><code class="language-php">
+    Route::post('comment/{comment}');
+  </code></pre>
+
+  <p>If the authorize method returns false, a HTTP response with code 403 will be automatically returned and the controller method will not execute.</p>
+
+  <p>If planning to have authorization logic in another part of the application, we can simply return true from the authorize method:</p>
+
+  <pre><code class="language-php">
+    public function authorize()
+    {
+        return true;
+    }
+  </code></pre>
+
+
+
 
 @endsection
