@@ -102,6 +102,10 @@ Route::get('notes/validation', function () {
     return view('notes.validation');
 });
 
+Route::get('notes/errors-logging', function () {
+    return view('notes.errors-logging');
+});
+
 
 
 
