@@ -421,6 +421,86 @@
 
   <h2>Available Validation Rules</h2>
 
+  <p>For a list of Available Validation Rules, please see Laravel's <a href="https://laravel.com/docs/5.5/validation#available-validation-rules" style="color: green; text-decoration: none;">Available Validation Rules</a> section.</p>
+
+  <h2>Conditionally Adding Rules</h2>
+
+  <h4>Validating When Present</h4>
+
+  <p>In some situations we may wish to run validation checks against a field only if that field is present in the input array. To quickly accomplish this, we can add the sometimes rule to the rule list:</p>
+
+  <pre><code class="language-php">
+    $v = Validator::make($data, [
+    'email' => 'sometimes|required|email',
+    ]);
+  </code></pre>
+
+  <p>In the example above the email field will only be validated if it is present in the $data array.</p>
+
+  <h4>Complex Conditional Validation</h4>
+
+  <p>Sometimes we may want to add validation rules based on more complex conditional logic. To do this, we can create a Validator instance with staic rules that never change:</p>
+
+  <pre><code class="language-php">
+    $v = Validator::make($data, [
+    'email' => 'required|email',
+    'games' => 'required|numeric',
+    ]);
+  </code></pre>
+
+  <p>Let's assume that, in our application, if a game collecter registers with the application and they own more than 100 games, we want them to explain why they own so many games. To conditionally add this requirement, we can use the sometimes() method on the Validator instance.</p>
+
+  <pre><code class="language-php">
+    $v->sometimes('reason', 'required|max:500', function($input) {
+      return $input->games >= 100;
+    });
+  </code></pre>
+
+  <p>The first argument passed to the sometimes() method is the name of the field we are conditionally validating. The second argument is the rules we want to add. If the closure passed as the third argument returns true, the rules will be added. This method makes it easy to build complex conditional validations. We can even add conditional validations for several fields at once:</p>
+
+  <pre><code class="language-php">
+    $v->sometimes(['reason', 'cost'], 'required', function($input) {
+      return $input->games >= 100;
+    });
+  </code></pre>
+
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>The $input parameter passed to the closure will be an instance of Illuminate\Support\Fluent and may be used to access your input and file.</p>
+  </div>
+
+  <h2>Validating Arrays</h2>
+
+  <p>Validating array based form input fields can be easy. We can use "dot" notation to validate attributes within an array. For example, if the incoming HTTP request contains a photos[profile] field, we can validate it like this:</p>
+
+  <pre><code class="language-php">
+    $validator = Validator::make($request->all(), [
+    'photos.profile' => 'required|image',
+    ]);
+  </code></pre>
+
+  <p>We can also validate each element of an array. For example, to validate that each email in a given array input field is unique, we can do the following:</p>
+
+  <pre><code class="language-php">
+    $validator = Validator::make($request->all(), [
+        'person.*.email' => 'email|unique:users',
+        'person.*.first_name' => 'required_with:person.*.last_name',
+    ])
+  </code></pre>
+
+  <p>We can also use the * character when specifying our validation messages in the language files:</p>
+
+  <pre><code class="language-php">
+    'custom' => [
+        'person.*.email' => [
+            'unique' => 'Each person must have a unique e-mail address',
+        ]
+    ],
+  </code></pre>
+
+  <h2>Custom Validation Rules</h2>
+
+  <h3>Using Rule Objects</h3>
+
   <p></p>
 
 @endsection
