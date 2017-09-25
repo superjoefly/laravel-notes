@@ -177,6 +177,55 @@
     &lt;h3&gt;{ { $exception-&gt;getMessage() } }&lt;/h3&gt;
   </code></pre>
 
+  <h2>Logging</h2>
 
+  <p>Laravel provides a simple extraction layer on top of the powerful Monolog library. By default, Laravel is configured to create a log file for the application in the storage/logs directory. We can write information to the logs using the Log facade:</p>
+
+  <pre><code class="language-php">
+    namespace App\Http\Controllers;
+
+    use App\User;
+    use Illuminate\Support\Facades\Log;
+    use App\Http\Controllers\Controller;
+
+    class UserController extends Controller
+    {
+        public function showProfile($id)
+        {
+            Log::info('Showing user profile for user: '.$id);
+
+            return view('user.profile', ['user' => User::findOrFail($id)]);
+        }
+    }
+  </code></pre>
+
+  <p>The logger provides the following logging levels: emergency, alert, critical, error, warning, notice, info and debug.</p>
+
+  <pre><code class="language-php">
+    Log::emergency($message);
+    Log::alert($message);
+    Log::critical($message);
+    Log::error($message);
+    Log::warning($message);
+    Log::notice($message);
+    Log::info($message);
+    Log::debug($message);
+  </code></pre>
+
+  <h4>Contextual Information</h4>
+
+  <p>An array of contextual data can also be passed to the log methods. This contextual data will be formatted and displayed with the log message:</p>
+
+  <pre><code class="language-php">
+    Log::info('User failed to login', ['id' => $user->id]);
+  </code></pre>
+
+  <h4>Accessing the Underlying Monolog Instance</h4>
+
+  <p>Monolog has a variety of additional handlers we can use for logging. If needed, we can access the underlying Monolog instance being used by Laravel:</p>
+
+  <pre><code class="language-php">
+    $monolog = Log::getMonolog();
+  </code></pre>
 
 @endsection
