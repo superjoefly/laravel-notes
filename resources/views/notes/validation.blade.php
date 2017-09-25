@@ -223,6 +223,105 @@
     }
   </code></pre>
 
+  <h3>Customizing the Error Messages</h3>
+
+  <p>We can customize the error messages used by the form request by overriding the messages() method. This method should return an array of attribute / rule pairs and their corresponding error messages:</p>
+
+  <pre><code class="language-php">
+    public function messages()
+    {
+        return [
+            'title.required' => 'A title is required',
+            'body.required'  => 'A message is required',
+        ];
+    }
+  </code></pre>
+
+  <h2>Manually Creating Validators</h2>
+
+  <p>If we don't want to use the validate method on the request, we can create a validator instance manually using the Validator facade. The make() method on the facade generates a new validator instance:</p>
+
+  <pre><code class="language-php">
+    namespace App\Http\Controllers;
+
+    use Validator;
+    use Illuminate\Http\Request;
+    use App\Http\Controllers\Controller;
+
+    class PostController extends Controller
+    {
+        /**
+         * Store a new blog post.
+         *
+         * @param  Request  $request
+         * @return Response
+         */
+        public function store(Request $request)
+        {
+            $validator = Validator::make($request->all(), [
+                'title' => 'required|unique:posts|max:255',
+                'body' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                return redirect('post/create')
+                            ->withErrors($validator)
+                            ->withInput();
+            }
+
+            // Store the blog post...
+        }
+    }
+  </code></pre>
+
+  <p>The first argument passed to the make() method is the data under validation. The second argument is the validation rules that should be applied to the data.</p>
+
+  <p>After checking if the request validation failed, we can use the withErrors() method to flash the error messages to the session. When using this method, the $errors variable will automatically be shared with the view after redirection, allowing us to easily display them back to the user. The withErrors() method accepts a validator, a MessageBag, or a PHP array.</p>
+
+  <h3>Automatic Redirection</h3>
+
+  <p>To create a validator instance manually, and still take advantage of the automatic redirection offered by the request's validate() method, we can call the validate() method on an existing validator instance. If validation fails, the user will automatically be redirected or, in the case of AJAX requests, a JSON response will be returned:</p>
+
+  <pre><code class="language-php">
+    Validator::make($request->all(), [
+        'title' => 'required|unique:posts|max:255',
+        'body' => 'required',
+    ])->validate();
+  </code></pre>
+
+  <h3>Named Error Bags</h3>
+
+  <p>If we have multiple forms on a single page, we can name the MessageBag of errors, allowing us to retrieve the error messages for a specific form. To do this, we can simply pass a name as the second argument to the withErrors() method:</p>
+
+  <pre><code class="language-php">
+    return redirect('register')
+                ->withErrors($validator, 'login');
+  </code></pre>
+
+  <p>Then, we can access the named MessageBag instance from the $errors variable:</p>
+
+  <pre><code class="language-php">
+    { { $errors->login->first('email') } }
+  </code></pre>
+
+  <h3>After Validation Hooks</h3>
+
+  <p>The validator allows us to attach callbacks to be run after validation is completed. This allows us to easily perform further validation and even add more error messages to the message collection. To get started, use the after() method on a validator instance:</p>
+
+  <pre><code class="language-php">
+    $validator = Validator::make(...);
+
+    $validator->after(function ($validator) {
+        if ($this->somethingElseIsInvalid()) {
+            $validator->errors()->add('field', 'Something is wrong with this field!');
+        }
+    });
+
+    if ($validator->fails()) {
+        //
+    }
+  </code></pre>
+
 
 
 
