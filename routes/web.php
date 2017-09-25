@@ -11,7 +11,72 @@
 |
 */
 
-// Temporary
+
+// NOTES NOTES NOTES
+
+
+// BASICS
+
+Route::get('basics/routing', function () {
+    return view('basics.routing');
+});
+
+Route::get('basics/middleware', function () {
+    return view('basics.middleware');
+});
+
+Route::get('basics/csrf', function () {
+    return view('basics.csrf');
+});
+
+Route::get('basics/controllers', function () {
+    return view('basics.controllers');
+});
+
+Route::get('basics/requests', function () {
+    return view('basics.requests');
+});
+
+Route::get('basics/responses', function () {
+    return view('basics.responses');
+});
+
+Route::get('basics/views', function () {
+    return view('basics.views');
+});
+
+Route::get('basics/urls', function () {
+    return view('basics.urls');
+});
+
+Route::get('basics/sessions', function () {
+    return view('basics.sessions');
+});
+
+Route::get('basics/validation', function () {
+    return view('basics.validation');
+});
+
+Route::get('basics/errors-logging', function () {
+    return view('basics.errors-logging');
+});
+
+
+// FRONTEND
+
+Route::get('frontend/blade-templates', function () {
+    return view('frontend.blade-templates');
+});
+
+
+
+
+
+
+
+
+
+// SERVICE PROVIDERS
 // Bind to Service Container
 // App::singleton('App\Billing\Stripe', f`unction () {
 //     return new \App\Billing\Stripe(config('services.stripe.secret'));
@@ -40,75 +105,6 @@ Route::get('/', function () {
 
 // If only returning a view
 Route::view('/welcome', 'welcome');
-
-
-
-
-
-// Testing Middleware (CheckAge)
-
-// If age <=200
-Route::view('/home', 'home')->name('home');
-
-// If age >200 ('age' is the key for the middleware)
-Route::post('/agecheck', function () {
-    return view('/agecheck');
-})->middleware('age');
-
-
-
-
-
-// Routes for Notes
-
-// Route that returns a view
-Route::get('notes/routing', function () {
-    return view('notes.routing');
-});
-
-Route::get('notes/middleware', function () {
-    return view('notes.middleware');
-});
-
-Route::get('notes/csrf', function () {
-    return view('notes.csrf');
-});
-
-Route::get('notes/controllers', function () {
-    return view('notes.controllers');
-});
-
-Route::get('notes/requests', function () {
-    return view('notes.requests');
-});
-
-Route::get('notes/responses', function () {
-    return view('notes.responses');
-});
-
-Route::get('notes/views', function () {
-    return view('notes.views');
-});
-
-Route::get('notes/urls', function () {
-    return view('notes.urls');
-});
-
-Route::get('notes/sessions', function () {
-    return view('notes.sessions');
-});
-
-Route::get('notes/validation', function () {
-    return view('notes.validation');
-});
-
-Route::get('notes/errors-logging', function () {
-    return view('notes.errors-logging');
-});
-
-
-
-
 
 
 // Basic route
@@ -160,29 +156,43 @@ Route::get('/user', 'UsersController@index');
 
 
 
-// For testing (see unit test)
+// TESTING (see unit test)
 // Route::get('/cache', function () {
 //     return Cache::get('key');
-// });``
+// });
 
 
-// Contollers
+
+
+// TESTING MIDDLEWARE (CheckAge)
+
+// If age <=200
+Route::view('/home', 'home')->name('home');
+
+// If age >200 ('age' is the key for the middleware)
+Route::post('/agecheck', function () {
+    return view('/agecheck');
+})->middleware('age');
+
+
+
+
+// CONTROLLERS
 Route::get('user/{id}', 'UsersController@show');
 
-// Resourceful Route
+// RESOURCEFUL ROUTE
 Route::resource('photo', 'PhotoController');
 
 
-// Requests (register)
+// REQUESTS (register)
 Route::get('/register', 'RegistrationController@create');
 Route::post('/register', 'RegistrationController@store');
 
-// Validation (post)
+// VALIDATION (post)
 Route::get('post/create', 'PostController@create');
 Route::post('/post', 'PostController@store');
-
 Route::get('/posts', 'PostController@index');
 
 
-// Adminer
+// ADMINER
 Route::any('adminer', '\Miroc\LaravelAdminer\AdminerAutologinController@index');
