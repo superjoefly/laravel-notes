@@ -20,5 +20,15 @@
 
     <button class="w3-btn w3-text-blue w3-xlarge w3-border w3-border-blue">Submit</button>
 
+    @if ($errors->any())
+        <div class="w3-panel w3-leftbar w3-border-red w3-pale-red">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
   </form>
 @endsection

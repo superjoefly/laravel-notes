@@ -92,6 +92,49 @@
 
   <h3>Displaying Validation Errors</h3>
 
+  <p>Laravel automatically redirects the user back to their previous location if validation does not pass. All validation errors will be automaitcally flashed to the session.</p>
+
+  <p>We do not have to explicitly bind the error message to the view in our GET route. Laravel will check for errors in the validation data, and automatically bind them to the view if they are available. The $errors variable is an instance of Illuminate\Support\MessageBag.</p>
+
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>The errors variable is bound to the view by the Illuminate\View\Middleware\ShareErrorsFromSession middleware, which is provided by the web middleware group. When this is applied a $errors variable will always be available in your views, allowing for safe assumption of availability.</p>
+  </div>
+
+  <p>In our example, the user will be directed to our controller's create() method when validation fails. allowing us to display the error message in the view:</p>
+
+  <pre><code class="language-php">
+    // Create Posts Form
+    @ if ($errors-&gt;any())<br />
+        &lt;div class="alert alert-danger"&gt;<br />
+            &lt;ul&gt;<br />
+                @ foreach ($errors-&gt;all() as $error)<br />
+                    &lt;li&gt;{ { $error } }&lt;/li&gt;<br />
+                @ endforeach<br />
+            &lt;/ul&gt;<br />
+        &lt;/div&gt;<br />
+    @ endif
+  </code></pre>
+
+  <h3>A Note on Optional Fields</h3>
+
+  <p>By default, Laravel includes the TrimStrings and ConvertEmptyStringsToNull middleware in the application's global middleware stack. These middleware are listed in the stack by the App\Http\Kernel class. Because of this, we will often need to mark the "optional" request fields as nullable if we don't want the validator to consider null values as invalid. For example:</p>
+
+  <pre><code class="language-php">
+    $request->validate([
+    'title' => 'required|unique:posts|max:255',
+    'body' => 'required',
+    'publish_at' => 'nullable|data'
+    ]);
+  </code></pre>
+
+  <p>In the above example, we are specifying that the publish_at field may be either null or a valid date representation. If the nullable modifier is not added to the rule definition, the validator would consider null an invalid date.</p>
+
+  <h4>AJAX Requests and Validation</h4>
+
+  <p>In the above example we used a traditional form to send data to the application. However, many applications use AJAX requests. When using the validate() method during an AJAX request, Laravel will not generate a redirect response. Instead, a JSON response will be generated containing all the validation errors. This JSON response will be sent with a 422 HTTP status code.</p>
+
+  <h2>Form Request Validation</h2>
+
   <p></p>
 
 @endsection
