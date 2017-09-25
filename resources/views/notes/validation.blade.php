@@ -135,6 +135,66 @@
 
   <h2>Form Request Validation</h2>
 
+  <h3>Creating Form Requests</h3>
+
+  <p>For more complex validation scenarios, we may wish to create a "form request". Form requests are custom request classes that contain validation logic. To create a form request, we can use the make:request Artisan command:</p>
+
+  <pre><code class="language-php">
+    php artisan make:request StoreBlogPost
+  </code></pre>
+
+  <p>The generated class is placed in the app/Http/Requests directory. If the directory does not exist, it will be created for us. Next, let's add a few validation rules to the rules method:</p>
+
+  <pre><code class="language-php">
+    public function rules()
+    {
+      return [
+        'title' => 'required|unique:posts|max:255',
+        'body' => 'required',
+      ];
+    }
+  </code></pre>
+
+  <p>To include the validation form, all we need to do is type-hint the request on the controller method. The incomming form request is validated before the controller method is called, meaning that we won't have to clutter our controller with any validation logic:</p>
+
+  <pre><code class="language-php">
+    public function authorize()
+      {
+          return true; // Set to true for example
+      }
+
+    public function store(StoreBlogPost $request)
+      {
+          // The incoming request is valid...
+      }
+  </code></pre>
+
+  <p>If validation fails, a redirect response will be generated to send the user back to their previous location. The errors will be flashed to the session so they are available for display. If the request was an AJAX request, an HTTP response with code 422 will be returned to the user including a JSON representation of the validation errors.</p>
+
+  <h4>Adding After Hooks to Form Requests</h4>
+
+  <p>To add an "after" hook to a form request, we can use the withValidator() method. This method receives the fully constructed validator, allowing us to call any of its methods before the validation rules are actually evaluated:</p>
+
+  <pre><code class="language-php">
+    /**
+     * Configure the validator instance.
+     *
+     * @param  \Illuminate\Validation\Validator  $validator
+     * @return void
+     */
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            if ($this->somethingElseIsInvalid()) {
+                $validator->errors()->add('field', 'Something is wrong with this field!');
+            }
+        });
+    }
+  </code></pre>
+
+  <h2>Authorizing Form Requests</h2>
+
   <p></p>
 
 @endsection

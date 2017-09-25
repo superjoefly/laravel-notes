@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Post;
+use App\Http\Requests\StoreBlogPost;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -36,15 +37,15 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+
+     // Uses Form Request for Validation (App\Http\Requests\StoreBlogPost)
+    public function store(StoreBlogPost $request)
     {
-        // Validate and Store the Blog Post...
-
-
-      $request->validate([
-          'title' => 'required|unique:posts|max:255',
-          'body' => 'required',
-      ]);
+        //   Validate and Store the Blog Post...
+    //   $request->validate([
+    //       'title' => 'required|unique:posts|max:255',
+    //       'body' => 'required',
+    //   ]);
 
         Post::create([
           'title' => request('title'),
