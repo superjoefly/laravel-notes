@@ -79,8 +79,10 @@
     <body>
 
     <div class="container" style="margin-bottom: 20px;">
-         @yield('content')
+        @yield('content')
     </div>
 
+    
+        @yield('footer')
     </body>
 </html>
