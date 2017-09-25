@@ -71,6 +71,92 @@
 
   <h3>The Report Method</h3>
 
+  <p>All exceptions are handled by the App\Exceptions\Handler class. This class contains two methods: report() and render(). The report() method is used to log exceptions or send them to an external service like Bugsnap or Sentry. By default, the report() method simply passes the exception to the base class where the exception is logged. However, we can log exceptions however we want.</p>
+
+  <p>For example, to report different types of exceptions in different ways, we can use the PHP instanceof comparison operator:</p>
+
+  <pre><code class="language-php">
+    public function report(Exception $exception)
+    {
+        if ($exception instanceof CustomException) {
+            // do something...
+        }
+
+        return parent::report($exception);
+    }
+  </code></pre>
+
+  <h4>The report Helper</h4>
+
+  <p>Sometimes we may want to report an exception but continue handling the current request. The report() helper function allows us to quickly report an exception using the exception handler's report() method without rendering an error page:</p>
+
+  <pre><code class="language-php">
+    public function isValid($value)
+    {
+        try {
+            // Validate the value...
+        } catch (Exception $e) {
+            report($e);
+
+            return false;
+        }
+    }
+  </code></pre>
+
+  <h4>Ignoring Exceptions by Type</h4>
+
+  <p>The $dontReport property of the exception handler contains an array of exception types that will not be logged. For example, exceptions resulting from 404 errors, as well as several other types of errors, are not written to the log files. We can add other exception types to this array as needed:</p>
+
+  <pre><code class="language-php">
+    protected $dontReport = [
+        \Illuminate\Auth\AuthenticationException::class,
+        \Illuminate\Auth\Access\AuthorizationException::class,
+        \Symfony\Component\HttpKernel\Exception\HttpException::class,
+        \Illuminate\Database\Eloquent\ModelNotFoundException::class,
+        \Illuminate\Validation\ValidationException::class,
+    ];
+  </code></pre>
+
+  <h3>The Render Method</h3>
+
+  <p>The render() method is responsible for converting a given exception into an HTTP response that should be sent back to the browser. By default, the exception is passed to the base class which generates a response for us. However, we are also able to check the exception type and return our own custom response:</p>
+
+  <pre><code class="language-php">
+    public function render($request, Exception $exception)
+    {
+        if ($exception instanceof CustomException) {
+            return response()->view('errors.custom', [], 500);
+        }
+
+        return parent::render($request, $exception);
+    }
+  </code></pre>
+
+  <h3>Reportable and Renderable Exceptions</h3>
+
+  <p>Instead of type-checking exceptions in the exception handler's report() and render() methods, we can define report() and render() methods directly on our custom exception. When these methods exist, they will be called automatically by the framework:</p>
+
+  <pre><code class="language-php">
+    namespace App\Exceptions;
+
+    use Exception;
+
+    class RenderException extends Exception
+    {
+        public function report()
+        {
+            // ...
+        }
+
+        public function render($request)
+        {
+            return response(...);
+        }
+    }
+  </code></pre>
+
+  <h2>HTTP Exceptions</h2>
+
   <p></p>
 
 @endsection
