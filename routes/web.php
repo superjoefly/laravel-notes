@@ -195,10 +195,17 @@ Route::get('/posts', 'PostController@index');
 
 
 // BLADE TEMPLATES
-
 Route::get('blade', function () {
-    return view('child');
+    return view('child', ['name' => 'Joey']);
 });
+
+
+
+
+
+
+
+
 
 
 // ADMINER
