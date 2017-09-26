@@ -194,5 +194,12 @@ Route::post('/post', 'PostController@store');
 Route::get('/posts', 'PostController@index');
 
 
+// BLADE TEMPLATES
+
+Route::get('blade', function () {
+    return view('child');
+});
+
+
 // ADMINER
 Route::any('adminer', '\Miroc\LaravelAdminer\AdminerAutologinController@index');
