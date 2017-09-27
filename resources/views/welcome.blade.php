@@ -1,5 +1,14 @@
 @extends('master')
 
+@section('localeGreeting')
+  {{-- Echoing out messages from the Language Files --}}
+  {{__('messages.welcome')}}
+  <br />
+  {{__('I love programming.')}}
+  <br />
+  @lang('messages.welcome')
+@endsection
+
 @section('content')
     <div class="flex-center position-ref full-height">
         @if (Route::has('login'))

@@ -102,9 +102,8 @@ Route::get('frontend/localization', function () {
 //     echo 'True';
 // };
 
-
 Route::get('/', function () {
-    return view('welcome');
+    return view('welcome', compact('greeting', 'message'));
 });
 
 // If only returning a view

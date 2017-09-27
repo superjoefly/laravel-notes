@@ -78,11 +78,13 @@
 
     <body>
 
+        @yield('localeGreeting')
+
     <div class="container" style="margin-bottom: 20px;">
         @yield('content')
     </div>
 
-    
+
         @yield('footer')
     </body>
 </html>
