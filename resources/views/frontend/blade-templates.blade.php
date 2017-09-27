@@ -143,7 +143,7 @@
   </code></pre>
 
   <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
-    Blade curly brace statements are automatically sent through PHP's htmlspecialchars() function to prevent XSS attacks.
+    <p>Blade curly brace statements are automatically sent through PHP's htmlspecialchars() function to prevent XSS attacks.</p>
   </div>
 
   <h4>Displaying Unescaped Data</h4>
@@ -558,23 +558,5 @@
         // The application is not in the local environment...
     &#64endenv
   </code></pre>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 @endsection
