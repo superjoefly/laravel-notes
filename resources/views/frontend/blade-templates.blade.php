@@ -424,6 +424,62 @@
 
   <h2>Including Sub-Views</h2>
 
+  <p>Blade's &#64include directive allows us to include a Blade view from within another view. All variables that are available to the parent view will be made available to the included view:</p>
+
+  <pre><code class="language-php">
+    &lt;div&gt;<br />
+        &#64include('shared.errors')<br />
+    <br />
+        &lt;form&gt;<br />
+            &lt;!-- Form Contents --&gt;<br />
+        &lt;/form&gt;<br />
+    &lt;/div&gt;
+  </code></pre>
+
+  <p>Even though the included view will inherit all data made available to the parent view, we can still pass an array of data to the included view:</p>
+
+  <pre><code class="language-php">
+    &#64include('view.name', ['some' => 'data'])
+  </code></pre>
+
+  <p>If we try to include a view that does not exist, Laravel will throw an error. To include a view that may or may not be present, we can use the &#64includeIf directive:</p>
+
+  <pre><code class="language-php">
+    &#64includeIf('view.name', ['some' => 'data'])
+  </code></pre>
+
+  <p>To include a view depending on a given boolean condition, we can use the &#64includeWhen directive:</p>
+
+  <pre><code class="language-php">
+    &#64includeWhen($boolean, 'view.name', ['some' => 'data'])
+  </code></pre>
+
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>Avoid using __DIR__ and __FILE__ constants in Blade views, since they will refer to the location of the cached, compiled view.</p>
+  </div>
+
+  <h3>Rendering View for Collections</h3>
+
+  <p>We can combine loops and includes into one line with Blade's &#64each directive:</p>
+
+  <pre><code class="language-php">
+    &#64each('view.name', $jobs, 'job')
+  </code></pre>
+
+  <p>The first element is the view partial to render for each element in the array or collection. The second argument is the array or collection we are iterating over. The third argument is the variable name that will be assigned to the current iteration in the current view. We can also pass a fourth argument that will determine the view that will be rendered if the given array is empty:</p>
+
+  <pre><code class="language-php">
+    &#64each('view.name', $jobs, 'job', 'view.empty')
+  </code></pre>
+
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>Views rendered via &#64each will not inherit variables from the parent view. If the child view requires these variables, we can use &#64foreach and &#64include instead.</p>
+  </div>
+
+  <h2>Stacks</h2>
+
+  <p></p>
+
 
 
 
