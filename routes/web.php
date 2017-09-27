@@ -72,6 +72,10 @@ Route::get('frontend/localization', function () {
     return view('frontend.localization');
 });
 
+Route::get('frontend/scaffolding', function () {
+    return view('frontend.scaffolding');
+});
+
 
 
 
