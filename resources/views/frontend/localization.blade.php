@@ -142,6 +142,8 @@
 
   <h2>Overriding Package Language Files</h2>
 
-  <p></p>
+  <p>Some packages may ship with their own language files. Instead of changing the package's core files, we can override them by placing files in the resources/lang/vendor/{package}/{locale} directory.</p>
+
+  <p>For example, to override the English translation strings in messages.php for a package named skyrim/hearthfire, we can place a language file at resources/lang/vendor/hearthfire/en/messages.php. Inside this file, we should only define the translation strings we want to override. Any translation strings we don't override will still be loaded from the package's original language files.</p>
 
 @endsection
