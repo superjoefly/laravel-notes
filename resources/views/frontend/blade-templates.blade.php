@@ -254,6 +254,175 @@
     &#64endguest
   </code></pre>
 
+  <h3>Switch Statements</h3>
+
+  <p>Switch statements can be constructed using the &#64switch, &#64case, &#64break, &#64default and &#64endswitch directives:</p>
+
+  <pre><code class="language-php">
+    &#64switch($i)
+        &#64case(1)
+            First case...
+            &#64break
+
+        &#64case(2)
+            Second case...
+            &#64break
+
+        &#64default
+            Default case...
+    &#64endswitch
+  </code></pre>
+
+  <h3>Loops</h3>
+
+  <p>Blade provides simple directives for working with PHP's loop structures. Each of these directives functions identically to their PHP counterparts:</p>
+
+  <pre><code class="language-php">
+    &#64for ($i = 0; $i < 10; $i++)
+        The current value is { { $i } }
+    &#64endfor
+
+    &#64foreach ($users as $user)
+        <p>This is user { { $user->id } }</p>
+    &#64endforeach
+
+    &#64forelse ($users as $user)
+        <li>{ { $user->name } }</li>
+    &#64empty
+        <p>No users</p>
+    &#64endforelse
+
+    &#64while (true)
+        <p>I'm looping forever.</p>
+    &#64endwhile
+  </code></pre>
+
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>When looping we can use the $loop variable to gain valuable information about the loop, such as whether you are in the first or last iteration of the loop:</p>
+  </div>
+
+  <p>When looping we can end the loop or skip the current iteration:</p>
+
+  <pre><code class="language-php">
+    &#64foreach ($users as $user)
+        &#64if ($user->type == 1)
+            &#64continue
+        &#64endif
+
+        <li>{ { $user->name } }</li>
+
+        &#64if ($user->number == 5)
+            &#64break
+        &#64endif
+    &#64endforeach
+  </code></pre>
+
+  <p>We can also include the condition with the directive declaration in one line:</p>
+
+  <pre><code class="language-php">
+    &#64foreach ($users as $user)
+        &#64continue($user->type == 1)
+
+        <li>{ { $user->name } }</li>
+
+        &#64break($user->number == 5)
+    &#64endforeach
+  </code></pre>
+
+  <h3>The Loop Variable</h3>
+
+  <p>When looping, a $loop variable will be available inside of the loop. This variable provides access to some useful information such as the current loop index and whether this is the first or last iteration of the loop:</p>
+
+  <pre><code class="language-php">
+    &#64foreach ($users as $user)
+        &#64if ($loop->first)
+            This is the first iteration.
+        &#64endif
+
+        &#64if ($loop->last)
+            This is the last iteration.
+        &#64endif
+
+        <p>This is user { { $user->id } }</p>
+    &#64endforeach
+  </code></pre>
+
+  <p>If we are in a nested loop, we can access the parent loop's $loop variable via the parent property:</p>
+
+  <pre><code class="language-php">
+    &#64foreach ($users as $user)
+        &#64foreach ($user->posts as $post)
+            &#64if ($loop->parent->first)
+                This is first iteration of the parent loop.
+            &#64endif
+        &#64endforeach
+    &#64endforeach
+  </code></pre>
+
+  <p>The $loop variable contains a variety of useful information:</p>
+
+  <table class="w3-table-all">
+    <tr>
+      <th>Property</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>$loop->index</td>
+      <td>index of the current loop iteration (starting at 0)</td>
+    </tr>
+    <tr>
+      <td>$loop->iteration</td>
+      <td>current iteration (starting at 1)</td>
+    </tr>
+    <tr>
+      <td>$loop->remaining</td>
+      <td>iterations remaining in the loop</td>
+    </tr>
+    <tr>
+      <td>$loop->count</td>
+      <td>total number of items in array being iterated</td>
+    </tr>
+    <tr>
+      <td>$loop->first</td>
+      <td>whether this is the first iteration of the loop</td>
+    </tr>
+    <tr>
+      <td>$loop->last</td>
+      <td>whether this is the last iteration of the loop</td>
+    </tr>
+    <tr>
+      <td>$loop->depth</td>
+      <td>nesting level of current loop</td>
+    </tr>
+    <tr>
+      <td>$loop->parent</td>
+      <td>when in nested loop, the parent's $loop variable</td>
+    </tr>
+  </table>
+
+  <h3>Comments</h3>
+
+  <p>Blade allows us to define comments in our views. Blade comments are not included in the HTML returned by the application:</p>
+
+  <pre><code class="language-php">
+    { {-- This comment will not be present in the rendered HTML --} }
+  </code></pre>
+
+  <h3>PHP</h3>
+
+  <p>Sometimes it is useful to embed PHP code into the views. We can use the Blade &#64php directive to execute a block of plain PHP within the template:</p>
+
+  <pre><code class="language-php">
+    &#64php
+        //...
+    &#64endphp
+  </code></pre>
+
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>Using this directive frequently may be a sign that we have too much logic embedded within the template.</p>
+  </div>
+
+  <h2>Including Sub-Views</h2>
 
 
 
