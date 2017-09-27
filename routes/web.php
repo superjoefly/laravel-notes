@@ -15,7 +15,7 @@
 // NOTES NOTES NOTES
 
 
-// BASICS
+// BASICS Notes
 
 Route::get('basics/routing', function () {
     return view('basics.routing');
@@ -62,10 +62,14 @@ Route::get('basics/errors-logging', function () {
 });
 
 
-// FRONTEND
+// FRONTEND Notes
 
 Route::get('frontend/blade-templates', function () {
     return view('frontend.blade-templates');
+});
+
+Route::get('frontend/localization', function () {
+    return view('frontend.localization');
 });
 
 
