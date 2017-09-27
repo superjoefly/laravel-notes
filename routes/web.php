@@ -76,6 +76,10 @@ Route::get('frontend/scaffolding', function () {
     return view('frontend.scaffolding');
 });
 
+Route::get('frontend/compiling', function () {
+    return view('frontend.compiling');
+});
+
 
 
 
