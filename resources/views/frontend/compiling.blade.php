@@ -208,5 +208,101 @@
 
   <h2>Working with JavaScript</h2>
 
+  <p>Mix provides several features to help with JavaScript files including compiling ECMAScript 2015, module bundling, minification and concatenation of plain JavaScript files:</p>
+
+  <pre><code class="language-php">
+    mix.js('resources/assets/js/app.js', 'public/js');
+  </code></pre>
+
+  <p>With the above code, we can take advantage of the following features:</p>
+
+  <ul>
+    <li>ES2015 syntax</li>
+    <li>Modules</li>
+    <li>Compilation of .vue files</li>
+    <li>Minification for production environments</li>
+  </ul>
+
+  <h3>Vendor Extraction</h3>
+
+  <p>Bundling all application-specific JavaScript with our vendor libraries can make long-term caching difficult. For example, a single update to the application code will force the browser to re-download all of the vendor libraries, even if they haven't changed.</p>
+
+  <p>If making frequent updates to the application's JavaScript, it would be wise to extract all vendor libraries into their own files. This way, a change to the application code will not affect the caching of our vendor.js file. We can do this easily using Mix's extract() method:</p>
+
+  <pre><code class="language-php">
+    mix.js('resources/assets/js/app.js', 'public/js')
+       .extract(['vue'])
+  </code></pre>
+
+  <p>The extract() method accepts an array of all libraries or modules we wish to extract into a vendor.js file. Using the above snippet as an example, Mix will generate the following files:</p>
+
+  <ul>
+    <li>public/js/manifest.js: the webpack manifest runtime</li>
+    <li>public/js/vendor.js: the vendor libraries</li>
+    <li>public/js/app.js: the application code</li>
+  </ul>
+
+  <p>To avoid JavaScript errors, be sure to load the files in the correct order:</p>
+
+  <pre><code class="language-php">
+    &lt;script src="/js/manifest.js"&gt;&lt;/script&gt;<br />
+    &lt;script src="/js/vendor.js"&gt;&lt;/script&gt;<br />
+    &lt;script src="/js/app.js"&gt;&lt;/script&gt;
+  </code></pre>
+
+  <h3>React</h3>
+
+  <p>Mix can automatically install the Babel plug-ins necessary for React support. To get started, replace the mix.js() call with mix.react():</p>
+
+  <pre><code class="language-php">
+    mix.react('resources/assets/js/app.jsx', 'public/js');
+  </code></pre>
+
+  <p>Mix will download and include the appropriate babel-preset-react Babel plugin.</p>
+
+  <h3>Vanilla JS</h3>
+
+  <p>We can combine and minify any number of JavaScript files with the scripts() method:</p>
+
+  <pre><code class="language-php">
+    mix.scripts([
+        'public/js/admin.js',
+        'public/js/dashboard.js'
+    ], 'public/js/all.js');
+  </code></pre>
+
+  <p>This option is useful for legacy projects where we don't require Webpack compilation for our JavaScript.</p>
+
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>A slight variation of mix.scripts() is mix.babel(). The concatenated file will receive Babel compilation, which translates any ES2015 code to vanilla JavaScript that all browsers will understand.</p>
+  </div>
+
+  <h3>Custom Webpack Configuration</h3>
+
+  <p>Laravel Mix references a pre-configured webpack.config.js file to get us up and running as quickly as possible. To modify this file we have two choices:</p>
+
+  <h4>Merging Custom Configuration</h4>
+
+  <p>We can use Mix's webpackConfig() method to merge any short Webpack configuration overrides. This does not require us to copy and maintain our own copy of the webpack.config.js file. The webpackConfig() method accepts an object, which will contain any Webpack spcific configuration that we want to apply:</p>
+
+  <pre><code class="language-php">
+    mix.webpackConfig({
+        resolve: {
+            modules: [
+                path.resolve(__dirname, 'vendor/laravel/spark/resources/assets/js')
+            ]
+        }
+    });
+  </code></pre>
+
+  <h4>Custom Configuration Files</h4>
+
+  <p>To completely customize the Webpack configuration, we can copy the node_modules/laravel-mix/setup/webpack.config.js file to our projects root directory. Next, we have to point all of the --config references in our package.json file to the newly copied config file. If we chose this approach, any future upstream updates to Mix's webpack.config.js must be manually merged into the customized file.</p>
+
+  <h2>Copying Files and Directories</h2>
+
   <p></p>
+
+
+
 @endsection
