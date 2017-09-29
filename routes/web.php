@@ -81,6 +81,13 @@ Route::get('frontend/compiling', function () {
 });
 
 
+// SECURITY notes
+
+Route::get('security/authentication', function () {
+    return view('security.authentication');
+});
+
+
 
 
 
