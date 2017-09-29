@@ -1,9 +1,29 @@
 
 // Fonts
-@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+// @import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+
+@import url("https://www.w3schools.com/w3css/4/w3.css");
+
+@import url("https://fonts.googleapis.com/css?family=Raleway:100,600");
 
 // Variables
 @import "variables";
 
 // Bootstrap
-@import "~bootstrap-sass/assets/stylesheets/bootstrap";
+// @import "~bootstrap-sass/assets/stylesheets/bootstrap";
+
+
+body {
+  color: grey;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+@media all and (min-width: 800px) {
+  .container {
+    width: 75%;
+    margin: auto;
+  }
+}

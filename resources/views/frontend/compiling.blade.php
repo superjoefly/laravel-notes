@@ -42,7 +42,7 @@
     // Run all Mix tasks
     npm run dev
 
-    // Run all Mix tasks and minify output
+    // Run all Mix tasks and minifies output
     npm run production
   </code></pre>
 
@@ -301,8 +301,80 @@
 
   <h2>Copying Files and Directories</h2>
 
-  <p></p>
+  <p>The copy() method can be used to copy files and directories to new locations. This is useful when a particular asset if the node_modules folder needs to be relocated to the public folder:</p>
 
+  <pre><code class="language-php">
+    mix.copy('node_modules/foo/bar.css', 'public/css/bar.css');
+  </code></pre>
 
+  <p>When copying a directory, the copy() method will flatten the directories structure. To maintain the directory's original structure, we can use the copyDirectory() method:</p>
+
+  <pre><code class="language-php">
+    mix.copyDirectory('assets/img', 'public/img');
+  </code></pre>
+
+  <h2>Versioning/Cache Busting</h2>
+
+  <p>Many developers suffix their compiled assets with a timestamp or unique token to force browsers to load the fresh assets instead of serving stale copies of the code. Mix can handle this for us using the version() method.</p>
+
+  <p>The version() method will automatically append a unique hash to the filenames of all compiled files, allowing for more convenient cache busting:</p>
+
+  <pre><code class="language-php">
+    mix.js('resources/assets/js/app.js', 'public/js')
+   .version();
+  </code></pre>
+
+  <p>After generating the versioned file, we won't know the exact file name. We can use Laravel's global mix() function within our views to load the appropriately hashed asset. The mix() function will automatically determine the current name of the hashed file:</p>
+
+  <pre><code class="language-php">
+    &lt;link rel="stylesheet" href="{ { mix('/css/app.css') } }"&gt;
+  </code></pre>
+
+  <p>Because versioned files are usually unecessary in development, we can instruct the versioning process to only run during 'npm run production':</p>
+
+  <pre><code class="language-php">
+    mix.js('resources/assets/js/app.js', 'public/js');
+
+    if (mix.inProduction()) {
+        mix.version();
+    }
+  </code></pre>
+
+  <h2>Browsersync Reloading</h2>
+
+  <p>Browsersync can automatically monitor files for changes, and inject the changes into the browser without requiring a manual refresh. We can enable this support by calling the mix.browserSync() method:</p>
+
+  <pre><code class="language-php">
+    mix.browserSync('my-domain.dev');
+
+    // Or...
+
+    // https://browsersync.io/docs/options
+    mix.browserSync({
+        proxy: 'my-domain.dev'
+    });
+  </code></pre>
+
+  <h2>Environment Variables</h2>
+
+  <p>We can inject environment variables into Mix by prefixing a key in the .env file with MIX_:</p>
+
+  <pre><code class="language-php">
+    MIX_SENTRY_DSN_PUBLIC=http://example.com
+  </code></pre>
+
+  <p>After the variable has been defined in the .env file, we can access via the process.env object. If the value changes while running a watch task, we will need to restart the task:</p>
+
+  <pre><code class="language-php">
+    process.env.MIX_SENTRY_DSN_PUBLIC
+  </code></pre>
+
+  <h2>Notifications</h2>
+
+  <p>When available, Mix will automatically display OS notifications for each bundle. This will give us instant feedback as to whether the compilation was successfull or not. To disable the notifications, we can deactivate using the disableNotifications() method:</p>
+
+  <pre><code class="language-php">
+    mix.disableNotifications();
+  </code></pre>
 
 @endsection
