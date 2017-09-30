@@ -190,6 +190,129 @@
 
   <h2>Manually Authenticating Users</h2>
 
+  <p>We are not required to use the authentication controllers included with Laravel. If we remove these controllers, however, we will need to manage the authentication using the Laravel authentication classes directly. To do this, we will access the authentication services using the Auth facade, and then use the attempt() method:</p>
+
+  <pre><code class="language-php">
+    namespace App\Http\Controllers;
+
+    use Illuminate\Support\Facades\Auth;
+
+    class LoginController extends Controller
+    {
+        public function authenticate()
+        {
+            if (Auth::attempt(['email' => $email, 'password' => $password])) {
+                // Authentication passed...
+                return redirect()->intended('dashboard');
+            }
+        }
+    }
+  </code></pre>
+
+  <p>The attempt() method accepts an array of key/value pairs as its first argument. The values in the array will be used to find the user in the database table. In the example above, the user will be retrieved using the value of the email column. If the user is found, the hashed password stored in the database will be compared to the hashed password value passed to the method via the array. If the two hashed passwords match, an authenticated session will be started for the user.</p>
+
+  <p>The attempt() method will return true if authentication was successful. Otherwise, false will be returned.</p>
+
+  <p>The intended method on the redirector will redirect the user to the URL they were attempting to access before being intercepted by the authentication middleware. A fallback URI can be given to this method in case the intended destination is not available.</p>
+
+  <h4>Specifying Additional Conditions</h4>
+
+  <p>We can add extra conditions to the authentication query in addition to the user's email and password. For example, we can verify that the user is maked as "active":</p>
+
+  <pre><code class="language-php">
+    if (Auth::attempt(['email' => $email, 'password' => $password, 'active' => 1])) {
+        // The user is active, not suspended, and exists.
+    }
+  </code></pre>
+
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>In the examples, email is not a required option, it is merely used as an example. Just make sure to use a column that corresponds to a "username" in the database.</p>
+  </div>
+
+  <h4>Accessing Spcific Guard Instances</h4>
+
+  <p>We can specify which guard instance to utilize using the guard() method on the Auth facade. This allows us to manage authentication for separate parts of the application using entirely separate authenticatable models or user tables.</p>
+
+  <p>The guard name passed to the guard() method should correspond to one of the guards configured in the auth.php config file:</p>
+
+  <pre><code class="language-php">
+    if (Auth::guard('admin')->attempt($credentials)) {
+        //
+    }
+  </code></pre>
+
+  <h4>Logging Out</h4>
+
+  <p>To log users out of the application, we can use the logout() method on the Auth facade. This will clear the authentication information in the user's session:</p>
+
+  <pre><code class="language-php">
+    Auth::logout();
+  </code></pre>
+
+  <h3>Remembering Users</h3>
+
+  <p>To provide "remember me" functionality in the application, we can pass a boolean value as the second argument to the attempt() method, which will keep the user authenticated indefinitely, or until they manually logout. The user table must include the string remember_token column, which will be used to store the "remember me" token:</p>
+
+  <pre><code class="language-php">
+    if (Auth::attempt(['email' => $email, 'password' => $password], $remember)) {
+        // The user is being remembered...
+    }
+  </code></pre>
+
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>If using the built-in LoginController that ships with Laravel, the proper logic to "remember" users is already implemented by the traits used by the controller.</p>
+  </div>
+
+  <p>When "remembering" users, we can use the viaRemember() method to determine if the user was authenticated using the "remember me" cookie:</p>
+
+  <pre><code class="language-php">
+    if (Auth::viaRemember()) {
+        //
+    }
+  </code></pre>
+
+  <h3>Other Authentication Methods</h3>
+
+  <h4>Authenticate a User Instance</h4>
+
+  <p>To log an existing user instance into the application, we can call the login() method with the user instance. The given object must be an implementation of the Illuminate\Contracts\Auth\Authenticatable contract. The App\User model included with Laravel already implements this interface:</p>
+
+  <pre><code class="language-php">
+    Auth::login($user);
+
+    // Login and "remember" the given user...
+    Auth::login($user, true);
+  </code></pre>
+
+  <p>We can also specify the guard instance we would like to use:</p>
+
+  <pre><code class="language-php">
+    Auth::guard('admin')->login($user);
+  </code></pre>
+
+  <h4>Authenticate a User by ID</h4>
+
+  <p>To log a user into the application using an ID, we can use the loginUsingId() method. This method accepts the primary key of the user we want to authenticate:</p>
+
+  <pre><code class="language-php">
+    Auth::loginUsingId(1);
+
+    // Login and "remember" the given user...
+    Auth::loginUsingId(1, true);
+  </code></pre>
+
+  <h4>Authenticate a User Once</h4>
+
+  <p>We can use the once() method to log a user into the application for a single request. No session or cookies will be utilized, meaning this method may be helpful when building a stateless API:</p>
+
+  <pre><code class="language-php">
+    if (Auth::once($credentials)) {
+        //
+    }
+  </code></pre>
+
+  <h2>HTTP Basic Authentication</h2>
+
   <p></p>
 
 
