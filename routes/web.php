@@ -87,6 +87,10 @@ Route::get('security/authentication', function () {
     return view('security.authentication');
 });
 
+Route::get('security/api-auth', function () {
+    return view('security.api-auth');
+});
+
 
 
 
