@@ -361,6 +361,43 @@
 
   <h2>Adding Custom Guards</h2>
 
+  <p>We can define our own custom authentication guards using the extend() method on the Auth facade. We can place this call to provider within a service provider. Since Laravel ships with an AuthServiceProvider, we can place the code in that provider:</p>
+
+  <pre><code class="language-php">
+    namespace App\Providers;
+
+    use App\Services\Auth\JwtGuard;
+    use Illuminate\Support\Facades\Auth;
+    use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+
+    class AuthServiceProvider extends ServiceProvider
+    {
+        public function boot()
+        {
+            $this->registerPolicies();
+
+            Auth::extend('jwt', function ($app, $name, array $config) {
+                // Return an instance of Illuminate\Contracts\Auth\Guard...
+
+                return new JwtGuard(Auth::createUserProvider($config['provider']));
+            });
+        }
+    }
+  </code></pre>
+
+  <p>In the example above, the callback passed to the extend() method should return an implementation of Illuminate\Contracts\Auth\Guard. This interface contains a few methods we will need to implement to define a custom guard. Once the guard has been defined, we can use it in the guards configuration of the auth.php config file:</p>
+
+  <pre><code class="language-php">
+    'guards' => [
+        'api' => [
+            'driver' => 'jwt',
+            'provider' => 'users',
+        ],
+    ],
+  </code></pre>
+
+  <h3>Adding Custom User Providers</h3>
+
   <p></p>
 
 
