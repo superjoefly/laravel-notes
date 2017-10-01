@@ -398,6 +398,102 @@
 
   <h3>Adding Custom User Providers</h3>
 
+  <p>If we are not using a traditional relational database to store users, we will need to extend Laravel with our own auth user provider. To do this we can use the provider method on the Auth facade to define a custom user provider:</p>
+
+  <pre><code class="language-php">
+    namespace App\Providers;
+
+    use Illuminate\Support\Facades\Auth;
+    use App\Extensions\RiakUserProvider;
+    use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+
+    class AuthServiceProvider extends ServiceProvider
+    {
+        public function boot()
+        {
+            $this->registerPolicies();
+
+            Auth::provider('riak', function ($app, array $config) {
+                // Return an instance of Illuminate\Contracts\Auth\UserProvider...
+
+                return new RiakUserProvider($app->make('riak.connection'));
+            });
+        }
+    }
+  </code></pre>
+
+  <p>After registring the provider using the provider() method, we can switch to the new user provider in the auth.php config file. To do this, first define a provider that uses the new driver:</p>
+
+  <pre><code class="language-php">
+    'providers' => [
+        'users' => [
+            'driver' => 'riak',
+        ],
+    ],
+  </code></pre>
+
+  <p>Finally, we can use this provider n the guards configuration:</p>
+
+  <pre><code class="language-php">
+    'guards' => [
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+    ],
+  </code></pre>
+
+  <h3>The User Provider Contract</h3>
+
+  <p>The Illuminate\Contracts\Auth\UserProvider implementations are only responsible for fetching a Illuminate\Contracts\Auth\Authenticatable implementation out of a persistent storage system such as MySQL, Riak, etc. These two interfaces allow the Laravel authentication mechanisms to continue functioning regardless of how the data is stored or what type of class is used to represent it.</p>
+
+  <p>Following is the Illuminate\Contracts\Auth\UserProvider contract:</p>
+
+  <pre><code class="language-php">
+    namespace Illuminate\Contracts\Auth;
+
+    interface UserProvider {
+
+        public function retrieveById($identifier);
+        public function retrieveByToken($identifier, $token);
+        public function updateRememberToken(Authenticatable $user, $token);
+        public function retrieveByCredentials(array $credentials);
+        public function validateCredentials(Authenticatable $user, array $credentials);
+
+    }
+  </code></pre>
+
+  <p>The retrieveById() function typically receives a key representing the user. The Authenticatable implementation matching the ID should be retrieved and returned by the method.</p>
+
+  <p>The retrieveByToken() function retrieves a user by their unique $identifier and "remember me" $token, stored in a remember_token field. As with the previous method, the Authenticatable implementation should be returned.</p>
+
+  <p>The updateRememberToken() method updates the $user field remember_token with the new $token. The new token can be either a fresh token, assigned on a successful "remember me" login attemp, or when the user is logging out.</p>
+
+  <p>The retrieveByCredentials() method receives the array of credentials passed to the Auth::attempt() method when attempting to sign into the application. The method should then query the underlying persistent storage for the user matching those credentials. Typically, this method will run a query with a "where" condition on $credentials['username']. The method should then return an implementation of Authenticatable.</p>
+
+  <p>The validateCredentials() method should compare the given $user with the $credentials to authenticate the user. This method should return true or false indicating on whether the password is valid.</p>
+
+  <h3>The Authenticatable Contract</h3>
+
+  <pre><code class="language-php">
+    namespace Illuminate\Contracts\Auth;
+
+    interface Authenticatable {
+
+        public function getAuthIdentifierName();
+        public function getAuthIdentifier();
+        public function getAuthPassword();
+        public function getRememberToken();
+        public function setRememberToken($value);
+        public function getRememberTokenName();
+
+    }
+  </code></pre>
+
+  <p>The getAuthIdentifierName() method should return the name of the "primary key" field of the user and the getAuthIdentifier() method should return the "primary key" of the user. In a MySQL back-end, this would be the auto-incrementing primary key. The getAuthPassword() method should return the user's hashed password. This interface allows the authentication system to work with any User class, regardless of what ORM or storage abstraction layer is being used. By default, Laravel includes a User class in the app directory which implements this interface.</p>
+
+  <h2>Events</h2>
+
   <p></p>
 
 
