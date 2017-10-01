@@ -313,6 +313,54 @@
 
   <h2>HTTP Basic Authentication</h2>
 
+  <p>HTTP Basic Authentication provides a quick way to authenticate users of the application without setting up a dedicated "login" page. To do this, we will need to attach the auth.basic middleware to the route. The auth.basic middleware is included with the Laravel framework.</p>
+
+  <pre><code class="language-php">
+    Route::get('profile', function () {
+        // Only authenticated users may enter...
+    })->middleware('auth.basic');
+  </code></pre>
+
+  <p>Once the middleware has been attached to the route, users will automatically be prompted for credentials when accessing the route in the browser. By default, the auth.basic middleware uses the email column on the user record as the "username".</p>
+
+  <h4>A Note on FastCGI</h4>
+
+  <p>When using PHP FastCGI,  HTTP basic authentication may not work correctly out of the box. To remedy this, add the following lines to the .htaccess file:</p>
+
+  <pre><code class="language-php">
+    RewriteCond %{HTTP:Authorization} ^(.+)$
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+  </code></pre>
+
+  <h3>Stateless HTTP Basic Authentication</h3>
+
+  <p>We can also use HTTP Basic Authentication without setting a user identifier cookie in the session. This is particularly useful for API authentication. To do this, first define a middleware that calls the onceBasic() method. If no reponse is returned by the onceBasic() method, the request can be passed further into the application:</p>
+
+  <pre><code class="language-php">
+    namespace Illuminate\Auth\Middleware;
+
+    use Illuminate\Support\Facades\Auth;
+
+    class AuthenticateOnceWithBasicAuth
+    {
+        public function handle($request, $next)
+        {
+            return Auth::onceBasic() ?: $next($request);
+        }
+
+    }
+  </code></pre>
+
+  <p>Next, register the route middleware and attach it to a route:</p>
+
+  <pre><code class="language-php">
+    Route::get('api/user', function () {
+        // Only authenticated users may enter...
+    })->middleware('auth.basic.once');
+  </code></pre>
+
+  <h2>Adding Custom Guards</h2>
+
   <p></p>
 
 
