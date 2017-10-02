@@ -653,5 +653,37 @@
 
   <h2>Events</h2>
 
-  <p></p>
+  <p>Events</p>
+
+  <p>Passport raises events when issuing access tokens and refresh tokens. We can use these events to prune or revoke other access tokens in our database. We can attach listeners to these events in our application's EventServiceProvider:</p>
+
+  <pre><code class="language-php">
+    protected $listen = [
+        'Laravel\Passport\Events\AccessTokenCreated' => [
+            'App\Listeners\RevokeOldTokens',
+        ],
+
+        'Laravel\Passport\Events\RefreshTokenCreated' => [
+            'App\Listeners\PruneOldTokens',
+        ],
+    ];
+  </code></pre>
+
+  <h2>Testing</h2>
+
+  <p>Passport's actingAs() as method can be used to specify the currently authenticated user as well as its scopes. The first argument given to the actingAs() method is the user instance, and the second is an array of scopes that should be granted to the user's token:</p>
+
+  <pre><code class="language-php">
+    public function testServerCreation()
+    {
+        Passport::actingAs(
+            factory(User::class)->create(),
+            ['create-servers']
+        );
+
+        $response = $this->post('/api/create-server');
+
+        $response->assertStatus(200);
+    }
+  </code></pre>
 @endsection
