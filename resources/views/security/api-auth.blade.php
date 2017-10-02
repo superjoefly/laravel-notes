@@ -625,5 +625,33 @@
 
   <h2>Consuming the API with JavaScript</h2>
 
+  <p>To consume your own API from your JavaScript application, we need to manually send an access token to the application and pass it with each request to the application. Passport includes a middleware that can handle this for us. All we need to do is add the CreateFreshApiToken middleware to our web middleware group:</p>
+
+  <pre><code class="language-php">
+    'web' => [
+        // Other middleware...
+        \Laravel\Passport\Http\Middleware\CreateFreshApiToken::class,
+    ],
+  </code></pre>
+
+  <p>This middlware will attach a laravel_token cookie to the outgoing responses. This cookie contains an encrypted JWT that Passport will use to authenticate API requests from the JavaScript application. Then we can make our requests to the application's API without explicitly passing an access token:</p>
+
+  <pre><code class="language-php">
+    axios.get('/api/user')
+        .then(response => {
+            console.log(response.data);
+        });
+  </code></pre>
+
+  <p>When using this method of authentication, Axios will automatically send the X-CSRF-TOKEN header. In addition, the default Laravel JavaScript scaffolding instructs Axios to send the X-Requested-With header:</p>
+
+  <pre><code class="language-php">
+    window.axios.defaults.headers.common = {
+        'X-Requested-With': 'XMLHttpRequest',
+    };
+  </code></pre>
+
+  <h2>Events</h2>
+
   <p></p>
 @endsection
