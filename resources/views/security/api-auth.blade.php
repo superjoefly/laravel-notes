@@ -540,5 +540,90 @@
 
   <h3>Defining Scopes</h3>
 
+  <p>Scopes allow our API clients to request a specific set of permissions when requesting authorization to access an account. In other words, scopes allow our application's users to limit the actions a third-party application can perform on their behalf.</p>
+
+  <p>We can define our API' scopes using the Passport::tokensCan method in the boot() method of our AuthServiceProvider. The tokensCan() method accepts an array of scope names and descriptions. The scope description can be anything we want, and will be displayed to the users on the authorization approval screen:</p>
+
+  <pre><code class="language-php">
+    use Laravel\Passport\Passport;
+
+    Passport::tokensCan([
+        'place-orders' => 'Place orders',
+        'check-status' => 'Check order status',
+    ]);
+  </code></pre>
+
+  <h3>Assigning Scopes to Tokens</h3>
+
+  <h4>When Requesting Authorization Codes</h4>
+
+  <p>When requesting an access token using the authorization code grant, consumers should spcify their desired scopes as the scope query string parameter. The scope parameter should be a space-delimited list of scopes:</p>
+
+  <pre><code class="language-php">
+    Route::get('/redirect', function () {
+        $query = http_build_query([
+            'client_id' => 'client-id',
+            'redirect_uri' => 'http://example.com/callback',
+            'response_type' => 'code',
+            'scope' => 'place-orders check-status',
+        ]);
+
+        return redirect('http://your-app.com/oauth/authorize?'.$query);
+    });
+  </code></pre>
+
+  <h4>When Issuing Personal Access Tokens</h4>
+
+  <p>If issuing personal access tokens using the User model's createToken() method, we can pass the array of desired scopes as the second argument to the method:</p>
+
+  <pre><code class="language-php">
+    $token = $user->createToken('My Token', ['place-orders'])->accessToken;
+  </code></pre>
+
+  <h3>Checking Scopes</h3>
+
+  <p>Passport includes two middleware that can be used to verify that an incoming request is authenticated with a token that has been granted a given scope. To do this, add the following middleware to the $routeMiddleware property of the app/Http/Kernel.php file:</p>
+
+  <pre><code class="language-php">
+    'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
+    'scope' => \Laravel\Passport\Http\Middleware\CheckForAnyScope::class,
+  </code></pre>
+
+  <h4>Check for All Scopes</h4>
+
+  <p>The scopes middleware can be assigned to a route to verify that the incoming request's access token has all of the listed scopes:</p>
+
+  <pre><code class="language-php">
+    Route::get('/orders', function () {
+        // Access token has both "check-status" and "place-orders" scopes...
+    })->middleware('scopes:check-status,place-orders');
+  </code></pre>
+
+  <h4>Check for ANY Scopes</h4>
+
+  <p>The scope middleware can be assigned to a route to verify that the incoming request's access token has at least one of the listed scopes:</p>
+
+  <pre><code class="language-php">
+    Route::get('/orders', function () {
+        // Access token has either "check-status" or "place-orders" scope...
+    })->middleware('scope:check-status,place-orders');
+  </code></pre>
+
+  <h4>Checking Scopes on a Token Instance</h4>
+
+  <p>Once an access token authenticated request has entered our application, we can still check if the token has a given scope using the tokenCan() method on the authenticated User instance:</p>
+
+  <pre><code class="language-php">
+    use Illuminate\Http\Request;
+
+    Route::get('/orders', function (Request $request) {
+        if ($request->user()->tokenCan('place-orders')) {
+            //
+        }
+    });
+  </code></pre>
+
+  <h2>Consuming the API with JavaScript</h2>
+
   <p></p>
 @endsection
