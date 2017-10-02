@@ -126,4 +126,27 @@
   </code></pre>
 
   <h2>Configuration</h2>
+
+  <h3>Token Lifetimes</h3>
+
+  <p>By default, Passport issues long-lived access tokens that never need to be refreshed, however we can adjust the token lifetime using the tokensExpireIn() and refreshTokensExpireIn() methods. These methods should be called from the boot() method of the AuthServiceProvider:</p>
+
+  <pre><code class="language-php">
+    use Carbon\Carbon;
+
+    public function boot()
+    {
+        $this->registerPolicies();
+
+        Passport::routes();
+
+        Passport::tokensExpireIn(Carbon::now()->addDays(15));
+
+        Passport::refreshTokensExpireIn(Carbon::now()->addDays(30));
+    }
+  </code></pre>
+
+  <h2>Issuing Access Tokens</h2>
+
+  <p></p>
 @endsection
