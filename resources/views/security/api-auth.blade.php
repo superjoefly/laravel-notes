@@ -359,5 +359,72 @@
 
   <h2>Implicit Grant Tokens</h2>
 
+  <p>The implicit grant is similar to the authorization code grant, however, the token is returned to the client without exchanging an authorization code. This type of grant is commonly used for JavaScript or mobile applications where the client credentials can't be securely stored. We can enable the grant by calling the enableImplicitGrant() method in the AuthServiceProvider:</p>
+
+  <pre><code class="language-php">
+    public function boot()
+    {
+        $this->registerPolicies();
+
+        Passport::routes();
+
+        Passport::enableImplicitGrant();
+    }
+  </code></pre>
+
+  <p>Once enabled, developers can use their client ID to request an access token from our application. The consuming application should make a redirect request the our application's /oauth/authorize route:</p>
+
+  <pre><code class="language-php">
+    Route::get('/redirect', function () {
+        $query = http_build_query([
+            'client_id' => 'client-id',
+            'redirect_uri' => 'http://example.com/callback',
+            'response_type' => 'token',
+            'scope' => '',
+        ]);
+
+        return redirect('http://your-app.com/oauth/authorize?'.$query);
+    });
+  </code></pre>
+
+  <h2>Client Credentials Grant Tokens</h2>
+
+  <p>The client credentials grant is suitable for machine-to-machine authentication. For example, we could use this grant in a scheduled job which is performing maintenance tasks over an API. To use this method, we first need to add new middleware to the $routeMiddleware in app/Http/Kernel.php:</p>
+
+  <pre><code class="language-php">
+    use Laravel\Passport\Http\Middleware\CheckClientCredentials;
+
+    protected $routeMiddleware = [
+        'client' => CheckClientCredentials::class,
+    ];
+  </code></pre>
+
+  <p>Then, we can attach this middleware to a route:</p>
+
+  <pre><code class="language-php">
+    Route::get('/user', function(Request $request) {
+        ...
+    })->middleware('client');
+  </code></pre>
+
+  <p>To retrieve a token, make a request to the oauth/token endpoint:</p>
+
+  <pre><code class="language-php">
+    $guzzle = new GuzzleHttp\Client;
+
+    $response = $guzzle->post('http://your-app.com/oauth/token', [
+        'form_params' => [
+            'grant_type' => 'client_credentials',
+            'client_id' => 'client-id',
+            'client_secret' => 'client-secret',
+            'scope' => 'your-scope',
+        ],
+    ]);
+
+    return json_decode((string) $response->getBody(), true)['access_token'];
+  </code></pre>
+
+  <h2>Personal Access Token</h2>
+
   <p></p>
 @endsection
