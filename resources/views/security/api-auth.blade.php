@@ -515,5 +515,30 @@
 
   <h3>Via Middleware</h3>
 
+  <p>Passport includes an authentication guard that will validate access tokens on incoming requests. Once we have configured the api guard to use the passport driver, we only need to specify the auth:api middleware on any routes that require a valid access token:</p>
+
+  <pre><code class="language-php">
+    Route::get('/user', function () {
+        //
+    })->middleware('auth:api');
+  </code></pre>
+
+  <h3>Passing the Access Token</h3>
+
+  <p>When calling routes that are protected by Passport, our application's API consumers should specify their access token as a Bearer token in the Authorization header of their request. For example, when using the Guzzle HTTP library:</p>
+
+  <pre><code class="language-php">
+    $response = $client->request('GET', '/api/user', [
+        'headers' => [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer '.$accessToken,
+        ],
+    ]);
+  </code></pre>
+
+  <h2>Token Scopes</h2>
+
+  <h3>Defining Scopes</h3>
+
   <p></p>
 @endsection
