@@ -309,5 +309,55 @@
 
   <h2>Password Grant Tokens</h2>
 
+  <p>The OAuth password grant allows our other first-party clients, such as a mobile application, to obtain an access token using an email address / username and password. This allows us to issue access tokens securely to our first party clients without redirecting our users to go through the entire OAuth2 authorization code redirect flow.</p>
+
+  <h3>Creating a Password Grant Client</h3>
+
+  <p>Before our application can issue tokens via the password grant, we will need to create a password grant client. We can do this using the passport:client command with the --password option. If we have alredy run the passport:install command, we do not need to run this command:</p>
+
+  <pre><code class="language-php">
+    php artisan passport:client --password
+  </code></pre>
+
+  <h3>Requesting Tokens</h3>
+
+  <p>Once a password grant client has been created, we can request an access token by issuing a POST request to the /oauth/token route with the user's email address and password. This route is already registered by the Passport::routes method. If the request is successful, we will receive an access_token and refresh_token in the JSON response from the server:</p>
+
+  <pre><code class="language-php">
+    $http = new GuzzleHttp\Client;
+
+    $response = $http->post('http://your-app.com/oauth/token', [
+        'form_params' => [
+            'grant_type' => 'password',
+            'client_id' => 'client-id',
+            'client_secret' => 'client-secret',
+            'username' => 'taylor@laravel.com',
+            'password' => 'my-password',
+            'scope' => '',
+        ],
+    ]);
+
+    return json_decode((string) $response->getBody(), true);
+  </code></pre>
+
+  <h3>Requesting All Scopes</h3>
+
+  <p>When using the password grant, we can authorize the token for all of the scopes supported by our application. We can do this using the * scope. When requesting the * scope, the can() method on the token instance will always return true. This scope may only be assigned to a token that is issued using the password grant:</p>
+
+  <pre><code class="language-php">
+    $response = $http->post('http://your-app.com/oauth/token', [
+        'form_params' => [
+            'grant_type' => 'password',
+            'client_id' => 'client-id',
+            'client_secret' => 'client-secret',
+            'username' => 'taylor@laravel.com',
+            'password' => 'my-password',
+            'scope' => '*',
+        ],
+    ]);
+  </code></pre>
+
+  <h2>Implicit Grant Tokens</h2>
+
   <p></p>
 @endsection
