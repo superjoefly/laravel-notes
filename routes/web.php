@@ -91,6 +91,10 @@ Route::get('security/api-auth', function () {
     return view('security.api-auth');
 });
 
+Route::get('security/authorization', function () {
+    return view('security.authorization');
+});
+
 
 
 
