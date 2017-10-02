@@ -426,5 +426,94 @@
 
   <h2>Personal Access Token</h2>
 
+  <p>Sometimes, users may want to issue access tokens themselves without going through the typical authorization code redirect flow. This can be useful to allow users to experiment with our API, or may serve as a simpler approach to issuing access tokens in general.</p>
+
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>Personal access tokens are always long lived. They are not modified when using the tokensExpireIn() or refreshTokensExpireIn() methods.</p>
+  </div>
+
+  <h3>Creating a Personal Access Client</h3>
+
+  <p>Before our application can issue personal access tokens, we will need to create a personal access client. We can do this using the passport:client command with the --personal option. If we've already ran the passport:install command, we do not need to run this command:</p>
+
+  <pre><code class="language-php">
+    php artisan passport:client --personal
+  </code></pre>
+
+  <h3>Managing Personal Access Tokens</h3>
+
+  <p>Once we have created a personal access client, we can issue tokens for a given user using the createToken() method on the User model instance. The createToken() method accepts the name of the token as its first argument and an optional array of scopes as its second argument:</p>
+
+  <pre><code class="language-php">
+    $user = App\User::find(1);
+
+    // Creating a token without scopes...
+    $token = $user->createToken('Token Name')->accessToken;
+
+    // Creating a token with scopes...
+    $token = $user->createToken('My Token', ['place-orders'])->accessToken;
+  </code></pre>
+
+  <h4>JSON API</h4>
+
+  <p>Passport also includes a JSON API for managing personal access tokens. We can pair this with our own frontend to offer our users a dashboard for managing peronsal access tokens. In the following examples, we'll use Axios to demonstrate making HTTP requests to the endpoints.</p>
+
+  <div class="w3-panel w3-border-blue w3-leftbar w3-pale-blue">
+    <p>We can use the frontend quickstart to have a fully functional frontend in a matter of minutes.</p>
+  </div>
+
+  <h5>GET /oauth/scopes</h5>
+
+  <p>This route returns all scopes defined for the application. We can use this route to list the scopes a user may assign to a personal access token:</p>
+
+  <pre><code class="language-php">
+    axios.get('/oauth/scopes')
+        .then(response => {
+            console.log(response.data);
+        });
+  </code></pre>
+
+  <h5>GET /oauth/personal-access-tokens</h5>
+
+  <p>This route returns all personal access tokens that the authenticated user has created. This is primarily useful for listing all access tokens so that the user may edit or delete them:</p>
+
+  <pre><code class="language-php">
+    axios.get('/oauth/personal-access-tokens')
+        .then(response => {
+            console.log(response.data);
+        });
+  </code></pre>
+
+  <h5>POST /oauth/peronsal-access-tokens</h5>
+
+  <p>This route creates new personal access tokens. It requires two pieces of data: the token's name and the scopes that should be assigned to the token:</p>
+
+  <pre><code class="language-php">
+    const data = {
+        name: 'Token Name',
+        scopes: []
+    };
+
+    axios.post('/oauth/personal-access-tokens', data)
+        .then(response => {
+            console.log(response.data.accessToken);
+        })
+        .catch (response => {
+            // List errors on response...
+        });
+  </code></pre>
+
+  <h5>DELETE /oauth/personal-access-tokens/{token-id}</h5>
+
+  <p>This route can be used to delete personal access tokens:</p>
+
+  <pre><code class="language-php">
+    axios.delete('/oauth/personal-access-tokens/' + tokenId);
+  </code></pre>
+
+  <h2>Protecting Routes</h2>
+
+  <h3>Via Middleware</h3>
+
   <p></p>
 @endsection
