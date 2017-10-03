@@ -95,6 +95,10 @@ Route::get('security/authorization', function () {
     return view('security.authorization');
 });
 
+Route::get('security/encryption', function () {
+    return view('security.encryption');
+});
+
 
 
 
