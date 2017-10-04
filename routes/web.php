@@ -99,6 +99,10 @@ Route::get('security/encryption', function () {
     return view('security.encryption');
 });
 
+Route::get('security/hashing', function () {
+    return view('security.hashing');
+});
+
 
 
 
