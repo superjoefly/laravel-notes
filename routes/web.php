@@ -103,6 +103,11 @@ Route::get('security/hashing', function () {
     return view('security.hashing');
 });
 
+Route::get('security/passwords', function () {
+    return view('security.passwords');
+});
+
+
 
 
 
