@@ -108,6 +108,13 @@ Route::get('security/passwords', function () {
 });
 
 
+// Advanced notes
+
+Route::get('advanced/artisan', function () {
+    return view('advanced.artisan');
+});
+
+
 
 
 
