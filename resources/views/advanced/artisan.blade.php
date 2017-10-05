@@ -370,5 +370,80 @@
 
   <h2>Programmatically Executing Commands</h2>
 
-  <p></p>
+  <p>To execute an Artisan command outside of the CLI, we can use the call() method on the Artisan facade. The call method accepts the name of the command as the first argument, and an array of command parameters as the second argument. The exit code will be returned:</p>
+
+  <pre><code class="language-php">
+    Route::get('/foo', function () {
+        $exitCode = Artisan::call('email:send', [
+            'user' => 1, '--queue' => 'default'
+        ]);
+
+        //
+    });
+  </code></pre>
+
+  <p>We can use the queue() method on the Artisan facade to process commands in the background by the queue workers. Before using this method, we must make sure that our queue is configured and that we are running a queue listener:</p>
+
+  <pre><code class="language-php">
+    Route::get('/foo', function () {
+        Artisan::queue('email:send', [
+            'user' => 1, '--queue' => 'default'
+        ]);
+
+        //
+    });
+  </code></pre>
+
+  <p>We can also specify the connection or queue the Artisan command should be dispatched to:</p>
+
+  <pre><code class="language-php">
+    Artisan::queue('email:send', [
+        'user' => 1, '--queue' => 'default'
+    ])->onConnection('redis')->onQueue('commands');
+  </code></pre>
+
+  <h4>Passing Array Values</h4>
+
+  <p>If the command defines an option that accepts an array, we can pass an array of values to that option:</p>
+
+  <pre><code class="language-php">
+    Route::get('/foo', function () {
+        $exitCode = Artisan::call('email:send', [
+            'user' => 1, '--id' => [5, 13]
+        ]);
+    });
+  </code></pre>
+
+  <h4>Passing Boolean Values</h4>
+
+  <p>To specify a value of an option that does not accept string values, such as the --force flag on the migrate:refresh command, we should pass true or false:</p>
+
+  <pre><code class="language-php">
+    $exitCode = Artisan::call('migrate:refresh', [
+        '--force' => true,
+    ]);
+  </code></pre>
+
+  <h3>Calling Commands from Other Commands</h3>
+
+  <p>We can also use the call() method to call commands from other existing Artisan commands. This call() method will accept the command name and an array of command parameters:</p>
+
+  <pre><code class="language-php">
+    public function handle()
+    {
+        $this->call('email:send', [
+            'user' => 1, '--queue' => 'default'
+        ]);
+
+        //
+    }
+  </code></pre>
+
+  <p>To call another console command and supress all of its output, we can use the callSilent() method. This method has the same signature as the call() method:</p>
+
+  <pre><code class="language-php">
+    $this->callSilent('email:send', [
+        'user' => 1, '--queue' => 'default'
+    ]);
+  </code></pre>
 @endsection
