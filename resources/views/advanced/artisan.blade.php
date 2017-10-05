@@ -123,5 +123,101 @@
 
   <h2>Defining Input Expectations</h2>
 
+  <p>Laravel makes it convenient to define the input we expect from the user with the 'signature' property on our commands. The signature property allows us to define the name, arguments and options for the command in a single, expressive, route-like syntax.</p>
+
+  <h3>Arguments</h3>
+
+  <p>All user supplied arguments and options are wrapped in curly braces. In the following example, the command defines one required argment: user:</p>
+
+  <pre><code class="language-php">
+    protected $signature = 'email:send {user}';
+  </code></pre>
+
+  <p>We can also make arguments optional, and define default values for the arguments:</p>
+
+  <pre><code class="language-php">
+    // Optional argument...
+    email:send {user?}
+
+    // Optional argument with default value...
+    email:send {user=foo}
+  </code></pre>
+
+  <h3>Options</h3>
+
+  <p>Options are another form of user input. Options are prefixed by two hyphens (--) when they are specified on the command line. There are two types of options: those that receive a value, and those that do not. Options that don't receive a value serve as a boolean "switch". Following is an example of this type of option:</p>
+
+  <pre><code class="language-php">
+    protected $signature = 'email:send {user} {--queue}';
+  </code></pre>
+
+  <p>In the above example, the --queue switch can be specified when calling the Artisan command. If the queue switch is passed, the value of the option will be true, otherwise, it will be false:</p>
+
+  <pre><code class="language-php">
+    php artisan email:send 1 --queue
+  </code></pre>
+
+  <h4>Options with Values</h4>
+
+  <p>Next, we'll look at an option that expects a value. If the user must specify a value for the option, suffix the option name with an = sign:</p>
+
+  <pre><code class="language-php">
+    protected $signature = 'email:send {user} {--queue=}';
+  </code></pre>
+
+  <p>In this example, a user can pass a value for the option as follows:</p>
+
+  <pre><code class="language-php">
+    php artisan email:send 1 --queue=default
+  </code></pre>
+
+  <p>We can define default values to options by specifying the default value after the option name:</p>
+
+  <pre><code class="language-php">
+    email:send {user} {--queue=default}
+  </code></pre>
+
+  <h4>Option Shortcuts</h4>
+
+  <p>To define shortcuts when defining options, we can specify it before the option name and use a | delimiter to seperate the shortcut from the full option name:</p>
+
+  <pre><code class="language-php">
+    email:send {user} {--Q|queue}
+  </code></pre>
+
+  <h3>Input Arrays</h3>
+
+  <p>To define arguments or options that expect array inputs, we can use the * character:</p>
+
+  <pre><code class="language-php">
+    email:send {user*}
+  </code></pre>
+
+  <p>The 'user' arguments can be passed, in order, to the command line. The following example will set the value of 'user' to ['foo', 'bar']:</p>
+
+  <pre><code class="language-php">
+    php artisan email:send foo bar
+  </code></pre>
+
+  <p>When defining an option that expects an array input, each option value passed to the command should be prefixed with the option name:</p>
+
+  <pre><code class="language-php">
+    email:send {user} {--id=*}
+
+    php artisan email:send --id=1 --id=2
+  </code></pre>
+
+  <h3>Input Descriptions</h3>
+
+  <p>We can assign descriptions to input arguments and options by separating the parameter from the description using a colon. If we need more room for the description, we can spread the definition accross multiple lines:</p>
+
+  <pre><code class="language-php">
+    protected $signature = 'email:send
+                            {user : The ID of the user}
+                            {--queue= : Whether the job should be queued}';
+  </code></pre>
+
+  <h2>Command I/O</h2>
+
   <p></p>
 @endsection
