@@ -348,5 +348,27 @@
 
   <h2>Registering Commands</h2>
 
+  <p>All commands within the app/Console/Commands directory will automatically be registered with Artisan. We can also make additional calls to the load() method to scan other directories for Artisan commands:</p>
+
+  <pre><code class="language-php">
+    protected function commands()
+    {
+        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__.'/MoreCommands');
+
+        // ...
+    }
+  </code></pre>
+
+  <p>We can also manually register commands by adding its classname to the $command property of the app/Console/Kernel.php file. When Artisan boots, all the commands listed in this property will be resolved by the service container and registered with Artisan:</p>
+
+  <pre><code class="language-php">
+    protected $commands = [
+        Commands\SendEmails::class
+    ];
+  </code></pre>
+
+  <h2>Programmatically Executing Commands</h2>
+
   <p></p>
 @endsection
