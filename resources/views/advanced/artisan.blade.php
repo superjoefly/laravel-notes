@@ -219,5 +219,134 @@
 
   <h2>Command I/O</h2>
 
+  <h3>Retrieving Input</h3>
+
+  <p>We can use the argument() and option() method to access the values for the arguments and options accepted by the command:</p>
+
+  <pre><code class="language-php">
+    public function handle()
+    {
+        $userId = $this->argument('user');
+
+        //
+    }
+  </code></pre>
+
+  <p>We can use the arguments() method to retrieve all of the arguments as an array:</p>
+
+  <pre><code class="language-php">
+    $arguments = $this->arguments();
+  </code></pre>
+
+  <p>We can retrieve options using the option() method. To retrieve all of the options as an array, we can use the options() method:</p>
+
+  <pre><code class="language-php">
+    // Retrieve a specific option...
+    $queueName = $this->option('queue');
+
+    // Retrieve all options...
+    $options = $this->options();
+  </code></pre>
+
+  <p>If the argument or option doesn't exist, null will be returned.</p>
+
+  <h3>Prompting for Input</h3>
+
+  <p>We can also ask a user to provide input during the execution of a command using the ask() method. This will prompt the user with the given question, accept their input, and then return the user's input back to the command:</p>
+
+  <pre><code class="language-php">
+    public function handle()
+    {
+        $name = $this->ask('What is your name?');
+    }
+  </code></pre>
+
+  <p>The secret() method is similar to the ask() method, except the user's input will not be visible to them as they type in the console. This method is useful when asking for sensitive information like a password:</p>
+
+  <pre><code class="language-php">
+    $password = $this->secret('What is the password?');
+  </code></pre>
+
+  <h4>Asking for Confirmation</h4>
+
+  <p>We can use the confirm() method to ask for a simple confirmation. By default, this method returns false, however, if the user enters 'y' or 'yes' in response to the prompt, the method will return true:</p>
+
+  <pre><code class="language-php">
+    if ($this->confirm('Do you wish to continue?')) {
+        //
+    }
+  </code></pre>
+
+  <h4>Auto-Completion</h4>
+
+  <p>We can use the anticipate() method to provide auto-completion for possible choices. The user will be able to choose any answer regardless of the auto-completion hints:</p>
+
+  <pre><code class="language-php">
+    $name = $this->anticipate('What is your name?', ['Taylor', 'Dayle']);
+  </code></pre>
+
+  <h4>Multiple Choice Questions</h4>
+
+  <p>In order to give the user a predefined set of choices, we can use the choice() method. We can set the default value to be returned if no option is chosen:</p>
+
+  <pre><code class="language-php">
+    $name = $this->choice('What is your name?', ['Taylor', 'Dayle'], $default);
+  </code></pre>
+
+  <h3>Writing Output</h3>
+
+  <p>To send output to the console, we can use the line(), info(), comment(), question(), and error() methods. Each of these methods will use appropriate ANSI colors for their purpose. In the following example, we will display some general information to the user...typically, the info() method will display in the console as green text:</p>
+
+  <pre><code class="language-php">
+    public function handle()
+    {
+        $this->info('Display this on the screen');
+    }
+  </code></pre>
+
+  <p>To display an error message, we can use the error() method, which is typically displayed in red:</p>
+
+  <pre><code class="language-php">
+    $this->error('Something went wrong!');
+  </code></pre>
+
+  <p>We can use the line() method to display plain, uncolored text:</p>
+
+  <pre><code class="language-php">
+    $this->line('Display this on the screen');
+  </code></pre>
+
+  <h4>Table Layouts</h4>
+
+  <p>We can use the table() method to correctly format multiple rows/columns of data. Simply pass in the headers and rows to the method. The width and height is dynamically calculated based on the given data:</p>
+
+  <pre><code class="language-php">
+    $headers = ['Name', 'Email'];
+
+    $users = App\User::all(['name', 'email'])->toArray();
+
+    $this->table($headers, $users);
+  </code></pre>
+
+  <h4>Progress Bar</h4>
+
+  <p>It can be helpful to display a progress bar for long-running tasks. To do this, first define the total number of steps the process will iterate through. Then, advance the progress bar after processing each item:</p>
+
+  <pre><code class="language-php">
+    $users = App\User::all();
+
+    $bar = $this->output->createProgressBar(count($users));
+
+    foreach ($users as $user) {
+        $this->performTask($user);
+
+        $bar->advance();
+    }
+
+    $bar->finish();
+  </code></pre>
+
+  <h2>Registering Commands</h2>
+
   <p></p>
 @endsection
